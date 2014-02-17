@@ -1,0 +1,20 @@
+/*
+VPLanguage = jstalk
+VPScriptSuperMenuTitle = Journal
+VPScriptMenuTitle = Create New Journal Entry
+VPShortcutKey = j
+VPShortcutMask = command option
+VPEndConfig
+*/
+
+var dateFormat = "YYYY-MM-dd";
+var dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+[dateFormatter setDateFormat:dateFormat];
+
+var pageName = [dateFormatter stringFromDate:[NSDate date]];
+
+if (![document containsItemWithKey:pageName]) {
+	[document createNewPageWithName:pageName];
+}
+
+[document openPageWithTitle:pageName];

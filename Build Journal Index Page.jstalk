@@ -1,0 +1,52 @@
+/*
+VPScriptSuperMenuTitle = Journal
+VPScriptMenuTitle = Build Journal Index Page
+VPShortcutKey = i
+VPShortcutMask = command option
+VPEndConfig
+*/
+
+function main(windowController, document) {
+
+    // Create page and write headline
+    var pageName = "Journal Index";
+    var journalIndex = document.createNewPageWithName(pageName);
+    journalIndex.setDataAsString("# Journal Index\n\n");
+    
+    // Create list of all journal pages
+    var keys = document.keys();
+    var journalPages = [];
+    
+    for (i = 0; i < keys.length(); i++) {
+        var page = document.pageForKey(keys[i]);
+        if (page.displayName().match(/^\d\d\d\d/)) {
+            journalPages.push(page);
+        }
+    }
+    
+    journalPages = journalPages.reverse();
+    
+    // Display all journal entries
+    var monthNames = ["January", "February", "March", "April",
+                    "May", "June", "July", "August",
+                    "September", "October", "November", "December"];
+    
+    var previousMonth = 0;
+    for (var i = 0; i < journalPages.length; i++) {
+        var currentMonth = (parseInt(journalPages[i].displayName().split("-")[1]));
+        
+        if (currentMonth != previousMonth) {
+            previousMonth = currentMonth;
+            nameOfMonth   =  monthNames[currentMonth - 1];
+        
+            journalIndex.appendString("## " + nameOfMonth + "\n\n");
+        }
+        
+        journalIndex.appendString("- " + journalPages[i].displayName() + "\n");
+    }
+
+    // Go to page
+    document.openPageWithTitle(pageName);
+}
+
+

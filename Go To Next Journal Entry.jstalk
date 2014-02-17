@@ -1,0 +1,32 @@
+/*
+VPLanguage = jstalk
+VPScriptSuperMenuTitle = Journal
+VPScriptMenuTitle = Go To Next Journal Entry
+VPShortcutKey = n
+VPShortcutMask = command option
+VPEndConfig
+*/
+
+function main(windowController, document) {
+	
+	var currentPage = windowController.visibleItem().displayName().toString();
+    var keys = document.keys();
+	var journalPages = [];
+	
+    for (i = 0; i < keys.length(); i++) {
+		if (pageName = keys[i].match(/^\d\d\d\d-\d\d-\d\d.*/)) {
+			journalPages.push(pageName[0]);
+		}
+    }
+	
+	var currentPosition  = journalPages.indexOf(currentPage)
+	var nextPosition = -1
+	
+	if (currentPosition != -1) {
+		nextPosition = currentPosition + 1
+	}
+	
+	if (nextPosition != -1 && nextPosition < journalPages.length) {
+		document.openPageWithTitle(journalPages[nextPosition]);
+	}
+}
