@@ -7,46 +7,58 @@ VPEndConfig
 */
 
 function main(windowController, document) {
+  // Create page and write headline
+  var pageName = "Journal Index";
+  var journalIndex = document.createNewPageWithName(pageName);
+  journalIndex.setDataAsString("# Journal Index\n");
 
-    // Create page and write headline
-    var pageName = "Journal Index";
-    var journalIndex = document.createNewPageWithName(pageName);
-    journalIndex.setDataAsString("# Journal Index\n");
+  // Create list of all journal pages
+  var keys = document.keys();
+  var journalPages = [];
 
-    // Create list of all journal pages
-    var keys = document.keys();
-    var journalPages = [];
+  for (i = 0; i < keys.length(); i++) {
+    var page = document.pageForKey(keys[i]);
+    if (page.displayName().match(/^\d\d\d\d/)) {
+      journalPages.push(page);
+    }
+  }
 
-    for (i = 0; i < keys.length(); i++) {
-        var page = document.pageForKey(keys[i]);
-        if (page.displayName().match(/^\d\d\d\d/)) {
-            journalPages.push(page);
-        }
+  journalPages = journalPages.reverse();
+
+  // Display all journal entries
+  var monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+
+  var previousMonth = 0;
+  for (var i = 0; i < journalPages.length; i++) {
+    var currentMonth = parseInt(
+      journalPages[i].displayName().toString().split("-")[1]
+    );
+
+    if (currentMonth != previousMonth) {
+      previousMonth = currentMonth;
+      nameOfMonth = monthNames[currentMonth - 1];
+
+      journalIndex.appendString("\n## " + nameOfMonth + "\n\n");
     }
 
-    journalPages = journalPages.reverse();
+    journalIndex.appendString(
+      "- " + journalPages[i].displayName().toString() + "\n"
+    );
+  }
 
-    // Display all journal entries
-    var monthNames = ["January", "February", "March", "April",
-                    "May", "June", "July", "August",
-                    "September", "October", "November", "December"];
-
-    var previousMonth = 0;
-    for (var i = 0; i < journalPages.length; i++) {
-        var currentMonth = (parseInt(journalPages[i].displayName().split("-")[1]));
-
-        if (currentMonth != previousMonth) {
-            previousMonth = currentMonth;
-            nameOfMonth   =  monthNames[currentMonth - 1];
-
-            journalIndex.appendString("\n## " + nameOfMonth + "\n\n");
-        }
-
-        journalIndex.appendString("- " + journalPages[i].displayName() + "\n");
-    }
-
-    // Go to page
-    document.openPageWithTitle(pageName);
+  // Go to page
+  document.openPageWithTitle(pageName);
 }
-
-
